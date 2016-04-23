@@ -10,7 +10,7 @@ class Profile < ActiveRecord::Base
       errors.add(:base, "You can't name a boy Sue!")
     end
   end
-  
+
   def  at_least_one_name
     if first_name.blank? && last_name.blank?
       errors.add(:base, "must have either a first or last name")
