@@ -5,8 +5,6 @@ class User < ActiveRecord::Base
   validates_presence_of :username
 
   def get_completed_count
-    # lists = []
-    # TodoList.where(user_id: id).each {|l| lists << l.id}
     TodoItem.where(todo_list_id: TodoList.select(:id).where(user_id: id),
       completed: true).count
   end
