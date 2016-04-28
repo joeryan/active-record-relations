@@ -24,6 +24,9 @@
         <td><%= link_to 'Destroy', todo_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
+    <div title="completed_count">
+      <%= "Number of Completed Todos: #{@completed_todos}" %>
+    </div>
   </tbody>
 </table>
 
