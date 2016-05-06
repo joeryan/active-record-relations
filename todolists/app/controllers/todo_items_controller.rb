@@ -12,11 +12,11 @@ class TodoItemsController < ApplicationController
   # def show
   # end
   #
-  # # GET /todo_items/new
-  # def new
-  #   @todo_item = TodoItem.new
-  # end
-  #
+  # # GET /todo_lists/:todo_list_id/todo_items/new(.:format)
+  def new
+      @todo_item = @todo_list.todo_items.new
+  end
+
   # # GET /todo_items/1/edit
   # def edit
   # end
@@ -34,7 +34,7 @@ class TodoItemsController < ApplicationController
         format.html { redirect_to @todo_list, alert: 'Unable to add todo Item!' }
         # format.json { render json: @todo_item.errors, status: :unprocessable_entity }
       end
-    end
+    # end
   end
 
   # PATCH/PUT /todo_items/1
