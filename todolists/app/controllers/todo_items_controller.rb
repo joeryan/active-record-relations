@@ -1,5 +1,5 @@
 class TodoItemsController < ApplicationController
-  before_action :set_todo_list, only: [:create, :destroy]
+  before_action :set_todo_list
 
   # GET /todo_items
   # GET /todo_items.json
@@ -7,10 +7,11 @@ class TodoItemsController < ApplicationController
   #   @todo_items = TodoItem.all
   # end
   #
-  # # GET /todo_items/1
-  # # GET /todo_items/1.json
-  # def show
-  # end
+  # # GET /todo_lists/:todo_list_id/todo_items/1
+  # # GET /todo_lists/:todo_list_id/todo_items/1.json
+  def show
+    @todo_item = @todo_list.todo_items.find(params[:id])
+  end
   #
   # # GET /todo_lists/:todo_list_id/todo_items/new(.:format)
   def new
@@ -18,8 +19,9 @@ class TodoItemsController < ApplicationController
   end
 
   # # GET /todo_items/1/edit
-  # def edit
-  # end
+  def edit
+      @todo_item = @todo_list.todo_items.find(params[:id])
+  end
 
   # POST /todo_items
   # POST /todo_items.json
@@ -39,18 +41,18 @@ class TodoItemsController < ApplicationController
 
   # PATCH/PUT /todo_items/1
   # PATCH/PUT /todo_items/1.json
-  # def update
-  #   @todo_item = @todo_list.todo_items.find(params[:id])
-  #   respond_to do |format|
-  #     if @todo_item.update(todo_item_params)
-  #       format.html { redirect_to @todo_item, notice: 'Todo item was successfully updated.' }
-  #       format.json { render :show, status: :ok, location: @todo_item }
-  #     else
-  #       format.html { render :edit }
-  #       format.json { render json: @todo_item.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
+  def update
+    @todo_item = @todo_list.todo_items.find(params[:id])
+    respond_to do |format|
+      if @todo_item.update(todo_item_params)
+        format.html { redirect_to @todo_list, notice: 'Todo item was successfully updated.' }
+        format.json { render :show, status: :ok, location: @todo_list }
+      else
+        format.html { render :edit }
+        format.json { render json: @todo_list.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   # DELETE /todo_items/1
   # DELETE /todo_items/1.json
@@ -58,7 +60,7 @@ class TodoItemsController < ApplicationController
     @todo_item = @todo_list.todo_items.find(params[:id])
     @todo_item.destroy
     respond_to do |format|
-      format.html { redirect_to todo_list_url, notice: 'Todo item was successfully destroyed.' }
+      format.html { redirect_to @todo_list, notice: 'Todo item was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
