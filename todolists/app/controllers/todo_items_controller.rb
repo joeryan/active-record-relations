@@ -28,15 +28,15 @@ class TodoItemsController < ApplicationController
   def create
     @todo_item = @todo_list.todo_items.new(todo_item_params)
 
-    # respond_to do |format|
+    respond_to do |format|
       if @todo_item.save
         format.html { redirect_to @todo_list, notice: 'Todo item was successfully created.' }
-        # format.json { render :show, status: :created, location: @todo_item }
+        format.json { render :show, status: :created, location: @todo_item }
       else
         format.html { redirect_to @todo_list, alert: 'Unable to add todo Item!' }
-        # format.json { render json: @todo_item.errors, status: :unprocessable_entity }
+        format.json { render json: @todo_item.errors, status: :unprocessable_entity }
       end
-    # end
+    end
   end
 
   # PATCH/PUT /todo_items/1
