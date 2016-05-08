@@ -9,22 +9,22 @@ feature "Module 4 End-2-End Test" do
 
     around :each do |example|
         if $continue
-            $continue = false 
-            example.run 
+            $continue = false
+            example.run
             $continue = true unless example.exception
         else
             example.skip
         end
     end
 
-    before :all do 
+    before :all do
         TodoItem.destroy_all
         TodoList.destroy_all
         User.destroy_all
-        load "#{Rails.root}/db/seeds.rb"  
+        load "#{Rails.root}/db/seeds.rb"
     end
 
-    def get_id_from_url(path) 
+    def get_id_from_url(path)
         return path.split("/").last.to_i
     end
 
@@ -44,9 +44,9 @@ feature "Module 4 End-2-End Test" do
             expect(URI.parse(page.current_url).path).to eq(root_path)
             expect(page).to have_content("Logged in successfully")
             expect(page).to have_content("Listing Todo Lists")
-            expect(page).to have_link(2, :href => "/?page=2")
-        
-            click_link(2, :href => "/?page=2")          # go to second page of todo_lists for user
+            expect(page).to have_link(2, :href => "/todo_lists?page=2")
+
+            click_link(2, :href => "/todo_lists?page=2")          # go to second page of todo_lists for user
             click_link("Show", :match => :first)        # select first todo_list on second page
 
             # gather data about selected item for comparison tests later
@@ -57,7 +57,7 @@ feature "Module 4 End-2-End Test" do
             expect(page).to have_content(curList.list_name)
             expect(page).to have_content(curList.list_due_date)
 
-            click_link("Show", :match => :first)        # select first todo item 
+            click_link("Show", :match => :first)        # select first todo item
             i_id = get_id_from_url(page.current_url)    # get id of TodoItem on page
             curItem = TodoItem.where(id: i_id).first    # get TodoItem from db
 
@@ -75,7 +75,7 @@ feature "Module 4 End-2-End Test" do
             else
                 click_link("Back")
             end
-            
+
             # confirmation test that TodoItem is complete
             curItem = TodoItem.where(id: i_id).first    # get updated TodoItem from db
             expect(curItem.completed).to be(true)
@@ -92,7 +92,7 @@ feature "Module 4 End-2-End Test" do
             fill_in 'todo_item[description]', with: item.description
             select item.due_date.year, from: 'todo_item[due_date(1i)]'
             select item.due_date.strftime("%B"), from: 'todo_item[due_date(2i)]'
-            select item.due_date.day, from: 'todo_item[due_date(3i)]'            
+            select item.due_date.day, from: 'todo_item[due_date(3i)]'
             click_button 'Create Todo item'
 
             # confirmation test that todo_item count has increased by 1 with new item
@@ -100,7 +100,7 @@ feature "Module 4 End-2-End Test" do
             # confirmation test that item exists in database
             expect(TodoItem.where(title: "Random").first.description).to eq(item.description)
             # confirm that we are back on summary TodoList item view
-            expect(page).to have_content(curList.list_name)          
+            expect(page).to have_content(curList.list_name)
             expect(page).to have_link("Destroy")
 
             # delete the first TodoItem on the current todo_list page
@@ -110,7 +110,7 @@ feature "Module 4 End-2-End Test" do
             # confirmation test to see that todo_item count has decreased back to original count
             expect(curList.todo_items.count).to eq(numItems)
             # confirm that we are back on summary TodoList item view
-            expect(page).to have_content(curList.list_name) 
+            expect(page).to have_content(curList.list_name)
 
             click_link("Back")                      # Return to todo_list view for user
             expect(page).to have_content("Listing Todo Lists")
@@ -134,14 +134,14 @@ feature "Module 4 End-2-End Test" do
 
             # confirmation test that new list has increased total list count by 1
             expect(user.authenticate("123abc").todo_lists.count).to eq(totalLists + 1)
-            
+
             # confirmation test that new list was persisted to database
             expect(TodoList.where(list_name: "New List").first.list_due_date).to eq(list.list_due_date)
-            
+
             click_link("Back")                                  # return to todo_list view for user
             expect(page).to have_content("Listing Todo Lists")  # confirm location
-            expect(page).to have_link("New Todo list")       
-            expect(page).to have_link("Destroy")     
+            expect(page).to have_link("New Todo list")
+            expect(page).to have_link("Destroy")
 
             # delete the first Todo List on page
             dlink = find_link("Destroy", :match => :first)
@@ -149,7 +149,7 @@ feature "Module 4 End-2-End Test" do
             click_link("Destroy", :match => :first)
 
             expect(page).to have_content("Listing Todo Lists")  # confirm location
-            expect(page).to have_link("New Todo list")  
+            expect(page).to have_link("New Todo list")
 
             # confirmation test to see that todo_list count has decreased back to original count
             expect(user.authenticate("123abc").todo_lists.count).to eq(totalLists)

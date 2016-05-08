@@ -26,6 +26,7 @@
   <div class="field">
     <%= f.label :completed if @todo_item.persisted? %><br>
     <%= f.check_box :completed if @todo_item.persisted? %>
+    <% params[:completed] = false unless @todo_item.persisted? %>
   </div>
 
   <div class="actions">
